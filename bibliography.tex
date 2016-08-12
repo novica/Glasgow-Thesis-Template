@@ -1,0 +1,91 @@
+%moving to biblatex
+\usepackage[style=authoryear, firstinits=true, natbib=true, backend=biber]{biblatex}
+\usepackage[utf8]{inputenc}
+\usepackage{xpatch}
+\addbibresource{bibliography/dissertation.bib}
+
+%\other stuff from the preamble to format the bibliography
+
+\DeclareNameAlias{sortname}{last-first}
+\DeclareNameAlias{default}{last-first}
+\DeclareFieldFormat  [article,inbook,incollection,inproceedings,patent,thesis,unpublished]{citetitle}{#1}
+\DeclareFieldFormat  [article,inbook,incollection,inproceedings,patent,thesis,unpublished]{title}{#1}
+\DeclareFieldFormat{parens}{#1}
+\DeclareNameFormat{author}{%
+  \ifnumequal{\value{listcount}}{1}
+    {\ifnumequal{\value{liststop}}{1}
+      {\namepartfamily\addcomma\addspace \namepartgiveni\addcomma\isdot}
+      {\namepartfamily\addcomma\addspace \namepartgiveni}}
+    {\ifnumless{\value{listcount}}{\value{liststop}}
+      {\addcomma\addspace \namepartfamily\addcomma\addspace \namepartgiveni}
+      {\addspace\bibstring{and} \namepartfamily\addcomma\addspace \namepartgiveni\addcomma\isdot}%
+    }%
+}
+\DeclareBibliographyDriver{article}{%
+  \usebibmacro{bibindex}%
+  \usebibmacro{begentry}%
+  \usebibmacro{author/translator+others}%
+  \setunit{\labelnamepunct}\newblock
+  \usebibmacro{title}%
+  \newunit
+  \printlist{language}%
+  \newunit\newblock
+  \usebibmacro{byauthor}%
+  \newunit\newblock
+  \usebibmacro{bytranslator+others}%
+  \newunit\newblock
+  \printfield{version}%
+  \newunit\newblock%
+  \usebibmacro{journal+issuetitle}%
+  \newunit
+  \usebibmacro{byeditor+others}%
+  \newunit
+  \usebibmacro{note+pages}%
+  \newunit\newblock
+  \iftoggle{bbx:isbn}
+    {\printfield{issn}}
+    {}%
+  \newunit\newblock
+  \usebibmacro{doi+eprint+url}%
+  \newunit\newblock
+  \usebibmacro{addendum+pubstate}%
+  \setunit{\bibpagerefpunct}\newblock
+  \usebibmacro{pageref}%
+  \usebibmacro{finentry}}
+\DeclareFieldFormat{journaltitle}{\mkbibemph{#1}\addcomma\isdot}
+\DeclareNameAlias{editorin}{first-last}
+
+\newbibmacro*{byeditor:in}{%
+  \ifnameundef{editor}
+    {}
+    {\printnames[editorin]{editor}%
+     \addspace\bibsentence%\
+     \addcomma\addspace {\usebibmacro{editorstrg}}%
+     \clearname{editor}%
+     \printunit{\addspace\isdot}}}
+
+\xpatchbibdriver{incollection}
+  {\usebibmacro{in:}%
+   \usebibmacro{maintitle+booktitle}%
+   \newunit\newblock
+   \usebibmacro{byeditor+others}}
+  {\usebibmacro{in:}%
+   \usebibmacro{byeditor:in}%
+   \setunit{\labelnamepunct}
+   \newunit\newblock
+   \usebibmacro{date}{\printdate}{\adddot\addspace}%
+   \newblock
+   \usebibmacro{maintitle+booktitle}%
+   \newunit\newblock
+   \usebibmacro{byeditor}}
+
+  {}{}
+\DeclareNameAlias{byeditor}{first-last}
+\date{}
+
+
+
+%some more leftover formatting; not sure if it still needed
+\widowpenalty=10000
+\clubpenalty=10000
+\raggedbottom
